@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import '../styles/styles.dart';
 import '../common_widgets/custom_button.dart';
 import '../api/call_api.dart'; 
+import '../home_page/search_page.dart';
+import '../create_loisir/create_loisir_page.dart';
 
 class DetailPage extends StatefulWidget {
   final String imagePath;
@@ -22,21 +24,21 @@ class DetailPage extends StatefulWidget {
     this.typeId,
   }) : super(key: key);
 
-
   @override
   State<DetailPage> createState() => _DetailPageState();
 }
 
 class _DetailPageState extends State<DetailPage> {
-  String typeName = ''; 
+  String typeName = '';
+  int _selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    getTypeName(); 
+    getTypeName();
   }
 
-    Future<void> getTypeName() async {
+  Future<void> getTypeName() async {
     try {
       dynamic responseData = await ApiService.fetchTypeById(widget.typeId ?? -1);
       if (responseData is String) {
@@ -44,7 +46,7 @@ class _DetailPageState extends State<DetailPage> {
           typeName = responseData;
         });
       } else if (responseData is Map<String, dynamic>) {
-        String name = responseData['nom']; 
+        String name = responseData['nom'];
         setState(() {
           typeName = name;
         });
@@ -56,6 +58,24 @@ class _DetailPageState extends State<DetailPage> {
     } catch (e) {
       setState(() {
         typeName = '';
+      });
+    }
+  }
+
+  void _onItemTapped(int index) {
+    if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => CreateLoisirPage()),
+      );
+    } else if (index == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SearchPage()), 
+      );
+    } else {
+      setState(() {
+        _selectedIndex = index;
       });
     }
   }
@@ -87,7 +107,7 @@ class _DetailPageState extends State<DetailPage> {
           ],
         ),
       ),
-      //bottomNavigationBar: _buildBottomNavigationBar(),
+      bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
 
@@ -202,7 +222,7 @@ class _DetailPageState extends State<DetailPage> {
 
   Widget _buildNotation() {
     return Padding(
-      padding: const EdgeInsets.all(2.0),
+      padding: const EdgeInsets.only(left: 2.0, top: 2.0, right: 16.0, bottom: 2.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -225,27 +245,27 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  // Widget _buildBottomNavigationBar() {
-  //   return BottomNavigationBar(
-  //     backgroundColor: backgroundColor,
-  //     selectedItemColor: primaryColor,
-  //     unselectedItemColor: Colors.white,
-  //     currentIndex: _selectedIndex,
-  //     onTap: _onItemTapped,
-  //     items: [
-  //       BottomNavigationBarItem(
-  //         icon: Icon(Icons.search),
-  //         label: 'Search',
-  //       ),
-  //       BottomNavigationBarItem(
-  //         icon: Icon(Icons.playlist_add),
-  //         label: 'Add',
-  //       ),
-  //       BottomNavigationBarItem(
-  //         icon: Icon(Icons.home),
-  //         label: 'Home',
-  //       ),
-  //     ],
-  //   );
-  // }
+  Widget _buildBottomNavigationBar() {
+    return BottomNavigationBar(
+      backgroundColor: backgroundColor,
+      selectedItemColor: primaryColor,
+      unselectedItemColor: Colors.white,
+      currentIndex: _selectedIndex,
+      onTap: _onItemTapped,
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.search),
+          label: 'Search',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.playlist_add),
+          label: 'Add',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+      ],
+    );
+  }
 }

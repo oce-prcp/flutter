@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../detail_page/detail_page.dart';
 
 class LoisirCard extends StatelessWidget {
   final String imagePath;
@@ -25,6 +26,16 @@ class LoisirCard extends StatelessWidget {
             children: [
               Image.asset(imagePath,
                   width: 150, height: 200, fit: BoxFit.cover),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push( 
+                    context,
+                    MaterialPageRoute(builder: (context) => const DetailPage())
+                  );
+                },
+                child: Image.asset(imagePath,
+                    width: 150, height: 200, fit: BoxFit.cover),
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(

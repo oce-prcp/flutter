@@ -86,9 +86,15 @@ class _DetailPageState extends State<DetailPage> {
       backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(widget.title,
-            style: const TextStyle(color: secondaryColor, fontFamily: 'FiraSans')),
+        style: const TextStyle(color: secondaryColor, fontFamily: 'FiraSans')),
         backgroundColor: backgroundColor,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -127,7 +133,7 @@ class _DetailPageState extends State<DetailPage> {
   Widget _buildTitleAndDate() {
     String formattedDate = widget.dateSortie != null
         ? DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.dateSortie!))
-        : 'Date non disponible';
+        : '';
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -170,7 +176,7 @@ class _DetailPageState extends State<DetailPage> {
                 onPressed: () {
                   // TO DO
                 },
-                backgroundColor: Colors.blue,
+                backgroundColor: primaryColor,
               ),
             ),
           ),
@@ -183,7 +189,7 @@ class _DetailPageState extends State<DetailPage> {
                 onPressed: () {
                   // TO DO
                 },
-                backgroundColor: Colors.pink,
+                backgroundColor: secondaryColor,
               ),
             ),
           ),

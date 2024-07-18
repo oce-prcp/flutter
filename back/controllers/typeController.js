@@ -1,4 +1,4 @@
-const Type = require('models/typeModel')
+const Type = require('../models/typeModel')
 
 exports.allType= async(req, res)=>{
     const type = await Type.findAll()

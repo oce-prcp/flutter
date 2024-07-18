@@ -275,7 +275,7 @@ class SearchPage extends StatelessWidget {
         title: Container(
           height: 40,
           decoration: BoxDecoration(
-            color: Colors.grey[800],
+            color: const Color(0xFF806491),
             borderRadius: BorderRadius.circular(20),
           ),
           child: TextField(
@@ -333,7 +333,7 @@ class SearchPage extends StatelessWidget {
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
-        selectedItemColor: Colors.purple,
+        selectedItemColor: const Color(0xFFB9848C),
         unselectedItemColor: Colors.white,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

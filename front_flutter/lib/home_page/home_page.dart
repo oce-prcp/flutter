@@ -249,7 +249,7 @@ class _HomePageState extends State<HomePage> {
           label: 'Search',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.add),
+          icon: Icon(Icons.playlist_add),
           label: 'Add',
         ),
         BottomNavigationBarItem(

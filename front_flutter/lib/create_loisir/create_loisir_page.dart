@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as p;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
@@ -46,12 +46,12 @@ class _CreateLoisirPageState extends State<CreateLoisirPage> {
     }
   }
 
-  Future<void> _saveLoisir() async {
+  Future<void> _saveLoisir(BuildContext buildContext) async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
       if (_image == null) {
-        ScaffoldMessenger.of(context as BuildContext).showSnackBar(
+        ScaffoldMessenger.of(buildContext).showSnackBar(
           const SnackBar(content: Text('Please select an image')),
         );
         return;
@@ -62,7 +62,7 @@ class _CreateLoisirPageState extends State<CreateLoisirPage> {
       if (!kIsWeb) {
         // Save the image locally on non-web platforms
         final appDir = await getApplicationDocumentsDirectory();
-        final fileName = basename(_image!.path);
+        final fileName = p.basename(_image!.path);
         final savedImage =
             await File(_image!.path).copy('${appDir.path}/$fileName');
         imagePath = savedImage.path;
@@ -81,7 +81,7 @@ class _CreateLoisirPageState extends State<CreateLoisirPage> {
 
       await ApiService.createLoisir(loisirData);
 
-      Navigator.pop(context as BuildContext);
+      Navigator.pop(buildContext);
     }
   }
 
@@ -252,7 +252,7 @@ class _CreateLoisirPageState extends State<CreateLoisirPage> {
                       ),
                       const SizedBox(height: 16),
                       ElevatedButton(
-                        onPressed: _saveLoisir,
+                        onPressed: () => _saveLoisir(context),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: secondaryColor,
                           minimumSize: const Size.fromHeight(50),
@@ -276,7 +276,7 @@ class _CreateLoisirPageState extends State<CreateLoisirPage> {
 class TextFieldLabel extends StatelessWidget {
   final String label;
 
-  const TextFieldLabel({super.key, required this.label});
+  const TextFieldLabel({required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -301,7 +301,6 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
 
   const CustomTextField({
-    super.key,
     required this.hintText,
     this.readOnly = false,
     this.keyboardType = TextInputType.text,

@@ -3,7 +3,7 @@ import '../api/call_api.dart';
 import '../common_widgets/custom_button.dart';
 import '../common_widgets/loisir_card.dart';
 import '../styles/styles.dart';
-import '../create_loisir/create_loisir.dart';
+import '../create_loisir/create_loisir_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    snapshot.data['imagePath'],
+                    snapshot.data['nom'],
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 32,

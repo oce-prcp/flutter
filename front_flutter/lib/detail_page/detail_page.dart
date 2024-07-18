@@ -1,27 +1,37 @@
 import 'package:flutter/material.dart';
 import '../styles/styles.dart';
-import '../api/call_api.dart';
 import '../common_widgets/custom_button.dart';
 
 class DetailPage extends StatefulWidget {
-  const DetailPage({super.key});
+  final String imagePath;
+  final String title;
+  final double notation;
+  final String? description;
+  final String? dateSortie;
+  final int? typeId;
+
+  const DetailPage({
+    Key? key,
+    required this.imagePath,
+    required this.title,
+    required this.notation,
+    this.description,
+    this.dateSortie,
+    this.typeId,
+  }) : super(key: key);
 
   @override
   State<DetailPage> createState() => _DetailPageState();
 }
 
 class _DetailPageState extends State<DetailPage> {
-
-  int _selectedIndex = 0;
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text('PRODUCT',
-            style: TextStyle(color: secondaryColor, fontFamily: 'FiraSans')),
+        title: Text(widget.title,
+            style: const TextStyle(color: secondaryColor, fontFamily: 'FiraSans')),
         backgroundColor: backgroundColor,
         elevation: 0,
       ),
@@ -29,8 +39,8 @@ class _DetailPageState extends State<DetailPage> {
         child: Column(
           children: [
             _buildImage(),
-            _buildTitleAndDate(), 
-            _buildEditDeleteButtons(), 
+            _buildTitleAndDate(),
+            _buildEditDeleteButtons(),
             Align(
               alignment: Alignment.centerLeft,
               child: _buildDescription(),
@@ -39,7 +49,7 @@ class _DetailPageState extends State<DetailPage> {
               alignment: Alignment.centerRight,
               child: _buildNotation(),
             ),
-          ]
+          ],
         ),
       ),
       //bottomNavigationBar: _buildBottomNavigationBar(),
@@ -50,33 +60,33 @@ class _DetailPageState extends State<DetailPage> {
     return Container(
       width: double.infinity,
       height: 300,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         image: DecorationImage(
-          // TO DO : dynamic 
-          image: AssetImage("images/intouchable.webp"),
+          image: AssetImage(widget.imagePath),
           fit: BoxFit.cover,
         ),
-      )
+      ),
     );
   }
 
   Widget _buildTitleAndDate() {
-    return const Padding(
-      padding: EdgeInsets.all(16.0),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Nom du Produit', // TO DO dynamic 
-             style: TextStyle(
+            widget.title,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 32,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
-            "date de sortie - type - 2h32", // TO DO dynamic
-            style: TextStyle(
+            "${widget.dateSortie ?? 'Date de sortie inconnue'} - type ${widget.typeId ?? 'Inconnu'} - 2h32",
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 16,
             ),
@@ -88,7 +98,7 @@ class _DetailPageState extends State<DetailPage> {
 
   Widget _buildEditDeleteButtons() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0), 
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -124,13 +134,13 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildDescription() {
-    return const Padding(
-      padding: EdgeInsets.all(16.0),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Description',  
+          const Text(
+            'Description',
             style: TextStyle(
               color: Colors.white,
               fontSize: 24,
@@ -138,10 +148,10 @@ class _DetailPageState extends State<DetailPage> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
-            "bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla ", // to do dynamic
-            style: TextStyle(
+            widget.description ?? 'Description non disponible.',
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 16,
             ),
@@ -158,7 +168,7 @@ class _DetailPageState extends State<DetailPage> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           const Text(
-            'Avis de nos utilisateurs',  
+            'Avis de nos utilisateurs',
             style: TextStyle(
               color: Colors.white,
               fontSize: 24,
@@ -168,12 +178,11 @@ class _DetailPageState extends State<DetailPage> {
           ),
           const SizedBox(height: 8),
           CustomButton(
-            label: "4.5 /5",
+            label: "${widget.notation} / 5",
             onPressed: () {},
           ),
         ],
       ),
     );
   }
-
 }

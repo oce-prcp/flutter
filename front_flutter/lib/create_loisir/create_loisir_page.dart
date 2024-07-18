@@ -61,13 +61,10 @@ class _CreateLoisirPageState extends State<CreateLoisirPage> {
 
       if (!kIsWeb) {
         // Save the image locally on non-web platforms
-        final directory = Directory("../../images");
-        if (!await directory.exists()) {
-          await directory.create(recursive: true);
-        }
+        final appDir = await getApplicationDocumentsDirectory();
         final fileName = p.basename(_image!.path);
         final savedImage =
-            await File(_image!.path).copy(p.join(directory.path, fileName));
+            await File(_image!.path).copy('${appDir.path}/$fileName');
         imagePath = savedImage.path;
       } else {
         imagePath = _image!.path;

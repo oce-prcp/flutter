@@ -87,23 +87,19 @@ class _SearchPageState extends State<SearchPage> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildRecentSearches(),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Results',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                    const SizedBox(height: 8),
-                    _buildResultsList(),
-                  ],
+            return Column(
+              children: [
+                _buildRecentSearches(),
+                const SizedBox(height: 16),
+                Text(
+                  'Results',
+                  style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
-              ),
+                const SizedBox(height: 8),
+                Expanded(
+                  child: _buildResultsList(),
+                ),
+              ],
             );
           }
         },
@@ -174,21 +170,21 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildResultsList() {
     return _filteredLoisirs.isNotEmpty
         ? GridView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.7,
               mainAxisSpacing: 8,
               crossAxisSpacing: 8,
+              childAspectRatio: 0.6,
             ),
             itemCount: _filteredLoisirs.length,
             itemBuilder: (context, index) {
               final loisir = _filteredLoisirs[index];
-              return LoisirCard(
-                imagePath: loisir['imagePath'],
-                title: loisir['nom'],
-                notation: (loisir['notation'] as num).toDouble(),
+              return Center(
+                child: LoisirCard(
+                  imagePath: loisir['imagePath'],
+                  title: loisir['nom'],
+                  notation: (loisir['notation'] as num).toDouble(),
+                ),
               );
             },
           )

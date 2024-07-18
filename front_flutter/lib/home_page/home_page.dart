@@ -184,57 +184,54 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildMostPopular() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Most Popular ($_selectedTypeName)',
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontFamily: 'FiraSans')),
-              const Text('See all', style: TextStyle(color: secondaryColor)),
-            ],
-          ),
-          const SizedBox(height: 8),
-          FutureBuilder<List<dynamic>>(
-            future: _loisirs,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else {
-                return SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: snapshot.data!.map((loisir) {
-                      return GestureDetector(
-                        onTap: () {
-                          // Handle card tap
-                        },
-                        child: LoisirCard(
-                          imagePath: loisir['imagePath'],
-                          title: loisir['nom'],
-                          //notation: loisir['notation'],
-                          notation: (loisir['notation'] as num).toDouble(),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                );
-              }
-            },
-          ),
-        ],
-      ),
-    );
-  }
+Widget _buildMostPopular() {
+  return Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Most Popular ($_selectedTypeName)',
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontFamily: 'FiraSans')),
+            const Text('See all', style: TextStyle(color: secondaryColor)),
+          ],
+        ),
+        const SizedBox(height: 8),
+        FutureBuilder<List<dynamic>>(
+          future: _loisirs,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else {
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: snapshot.data!.map((loisir) {
+                    return LoisirCard(
+                      imagePath: loisir['imagePath'],
+                      title: loisir['nom'],
+                      notation: (loisir['notation'] as num).toDouble(),
+                      description: loisir['description'],
+                      dateSortie: loisir['dateSortie'],
+                      typeId: loisir['typeId'],
+                    );
+                  }).toList(),
+                ),
+              );
+            }
+          },
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(

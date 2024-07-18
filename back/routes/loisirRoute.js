@@ -5,6 +5,8 @@ const loisirController = require('../controllers/loisirController')
 route.post('/create', loisirController.CreateLoisir)
 route.put('/update/:id', loisirController.UpdateLoisir)
 route.get('/all', loisirController.AllLoisirs)
+route.get('/getByType/:id',loisirController.LoisirsByTypeId)
+route.get('/top', loisirController.TopLoisir)
 route.get('/:id', loisirController.LoisirId)
 route.delete('/:id', loisirController.DeleteLoisir)
 

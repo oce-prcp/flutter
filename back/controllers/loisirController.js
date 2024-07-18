@@ -30,7 +30,9 @@ exports.UpdateLoisir = async(req, res)=>{
 }
 
 exports.AllLoisirs= async(req, res)=>{
-    const loisir = await Loisir.findAll()
+    const loisir = await Loisir.findAll({
+        order: [['notation', 'DESC']],
+    })
     res.status(200).json(loisir)
 }
 
@@ -47,4 +49,23 @@ exports.DeleteLoisir= async(req, res) => {
         }
     })
     res.status(200).json({ message : "Success" })
+}
+
+exports.TopLoisir= async(req, res)=>{
+    const loisir = await Loisir.findOne({
+        order: [['notation', 'DESC']],
+    })
+    res.status(200).json(loisir)
+}
+
+
+exports.LoisirsByTypeId= async(req, res)=>{
+    const typeId = parseInt(req.params.id); 
+    const loisir = await Loisir.findAll({
+        order: [['notation', 'DESC']],
+        where: {
+            typeId : typeId
+        }
+    })
+    res.status(200).json(loisir)
 }

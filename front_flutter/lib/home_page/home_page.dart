@@ -93,7 +93,6 @@ class _HomePageState extends State<HomePage> {
             height: 300,
             decoration: BoxDecoration(
               image: DecorationImage(
-                //image: NetworkImage(snapshot.data['imagePath']),
                 image: AssetImage(snapshot.data['imagePath']),
                 fit: BoxFit.cover,
               ),
@@ -105,7 +104,7 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    snapshot.data['nom'],
+                    snapshot.data['imagePath'],
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 32,

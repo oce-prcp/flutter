@@ -23,7 +23,6 @@ class LoisirCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              //Image.network(imagePath,
               Image.asset(imagePath,
                   width: 150, height: 200, fit: BoxFit.cover),
               Padding(

@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ApiService {
-  static const String baseUrl = 'http://10.74.1.215:8000';
+  static const String baseUrl = 'http://192.168.56.1:8000';
 
   static Future<List<dynamic>> fetchLoisirs() async {
     final response = await http.get(Uri.parse('$baseUrl/loisir/all'));
@@ -52,6 +52,15 @@ class ApiService {
 
     if (response.statusCode != 201) {
       throw Exception('Failed to create loisir');
+    }
+  }
+
+  static Future<Map<String, dynamic>> fetchTypeById(int typeId) async {
+    final response = await http.get(Uri.parse('$baseUrl/type/$typeId'));
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load type by id');
     }
   }
 }

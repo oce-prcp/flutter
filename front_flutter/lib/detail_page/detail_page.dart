@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; 
 import '../styles/styles.dart';
 import '../common_widgets/custom_button.dart';
+import '../api/call_api.dart'; 
 
 class DetailPage extends StatefulWidget {
   final String imagePath;
@@ -20,11 +22,44 @@ class DetailPage extends StatefulWidget {
     this.typeId,
   }) : super(key: key);
 
+
   @override
   State<DetailPage> createState() => _DetailPageState();
 }
 
 class _DetailPageState extends State<DetailPage> {
+  String typeName = ''; 
+
+  @override
+  void initState() {
+    super.initState();
+    getTypeName(); 
+  }
+
+    Future<void> getTypeName() async {
+    try {
+      dynamic responseData = await ApiService.fetchTypeById(widget.typeId ?? -1);
+      if (responseData is String) {
+        setState(() {
+          typeName = responseData;
+        });
+      } else if (responseData is Map<String, dynamic>) {
+        String name = responseData['nom']; 
+        setState(() {
+          typeName = name;
+        });
+      } else {
+        setState(() {
+          typeName = '';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        typeName = '';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,6 +105,10 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildTitleAndDate() {
+    String formattedDate = widget.dateSortie != null
+        ? DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.dateSortie!))
+        : 'Date non disponible';
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -85,7 +124,7 @@ class _DetailPageState extends State<DetailPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            "${widget.dateSortie ?? 'Date de sortie inconnue'} - type ${widget.typeId ?? 'Inconnu'} - 2h32",
+            "$formattedDate ${typeName.isNotEmpty ? "- $typeName" : ''}",
             style: const TextStyle(
               color: Colors.white,
               fontSize: 16,
@@ -185,4 +224,28 @@ class _DetailPageState extends State<DetailPage> {
       ),
     );
   }
+
+  // Widget _buildBottomNavigationBar() {
+  //   return BottomNavigationBar(
+  //     backgroundColor: backgroundColor,
+  //     selectedItemColor: primaryColor,
+  //     unselectedItemColor: Colors.white,
+  //     currentIndex: _selectedIndex,
+  //     onTap: _onItemTapped,
+  //     items: [
+  //       BottomNavigationBarItem(
+  //         icon: Icon(Icons.search),
+  //         label: 'Search',
+  //       ),
+  //       BottomNavigationBarItem(
+  //         icon: Icon(Icons.playlist_add),
+  //         label: 'Add',
+  //       ),
+  //       BottomNavigationBarItem(
+  //         icon: Icon(Icons.home),
+  //         label: 'Home',
+  //       ),
+  //     ],
+  //   );
+  // }
 }

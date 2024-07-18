@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    snapshot.data['imagePath'],
+                    snapshot.data['nom'],
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 32,

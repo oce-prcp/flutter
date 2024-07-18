@@ -1,5 +1,5 @@
 const { describe } = require('node:test')
-const Loisir = require('../models/loisirModel')
+const Loisir = require('models/loisirModel')
 
 exports.CreateLoisir = async(req,res)=>{
     let loisir = req.body

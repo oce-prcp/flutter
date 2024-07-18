@@ -1,5 +1,5 @@
 const sequelize = require('../database/database')
-const type = require('../models/typeModel');
+const type = require('models/typeModel');
 
 exports.createAllTable = async(req, res)=>{
     await sequelize.sync({ alter: true})

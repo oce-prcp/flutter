@@ -184,6 +184,10 @@ class _SearchPageState extends State<SearchPage> {
                   imagePath: loisir['imagePath'],
                   title: loisir['nom'],
                   notation: (loisir['notation'] as num).toDouble(),
+                  description: loisir['description'], 
+                  dateSortie: loisir['dateSortie'],
+                  typeId: loisir['typeId'],
+                  loisirId: loisir['id'], 
                 ),
               );
             },

@@ -6,7 +6,6 @@ const sequelize = new Sequelize(process.env.DBDATABASE, process.env.DBUSER, proc
     dialect: 'mariadb'
 })
 
-// tester la connexion
 sequelize.authenticate().then(()=>{
     console.log('success')
 }).catch((err)=>{

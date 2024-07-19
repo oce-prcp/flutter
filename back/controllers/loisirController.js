@@ -1,33 +1,39 @@
-const { describe } = require('node:test')
 const Loisir = require('../models/loisirModel')
 
-exports.CreateLoisir = async(req,res)=>{
-    let loisir = req.body
-    let result = await Loisir.create(loisir)
-    result.save()
-    res.status(201).json(result.nom)
-}
+exports.createLoisir = async (req, res) => {
+   const { nom, description, dateSortie, notation, typeId } = req.body;
+   const imagePath = req.file ? `images/${req.file.filename}` : null;
 
-exports.UpdateLoisir = async(req, res)=>{
-    let idP = parseInt(req.params.id)
-    let UpdateLoisir = req.body
-    
-    let loisir = await Loisir.update(
-        {
-            typeId: UpdateLoisir.id,
-            nom: UpdateLoisir.nom,
-            description: UpdateLoisir.description,
-            notation: UpdateLoisir.notation,
-            dateSortie: UpdateLoisir.dateSortie,
-            imagePath: UpdateLoisir.imagePath,
-        },
-        {
-        where: {
-            id: idP
-        }
-    })
-    res.status(200).json(loisir)
-}
+   try {
+      const loisir = await Loisir.create({
+         nom,
+         description,
+         dateSortie,
+         notation,
+         typeId,
+         imagePath,
+      });
+      res.status(201).json(loisir);
+   } catch (error) {
+      res.status(500).json({ error: error.message });
+   }
+};
+
+exports.updateLoisir = async (req, res) => {
+   const { nom, description, dateSortie, notation, typeId } = req.body;
+   const imagePath = req.file ? `images/${req.file.filename}` : req.body.imagePath;
+
+   try {
+      const loisir = await Loisir.update(
+         { nom, description, dateSortie, notation, typeId, imagePath },
+         { where: { id: req.params.id } }
+      );
+      res.status(200).json(loisir);
+   } catch (error) {
+      res.status(500).json({ error: error.message });
+   }
+};
+
 
 exports.AllLoisirs= async(req, res)=>{
     const loisir = await Loisir.findAll({

@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:path_provider/path_provider.dart';
-import 'package:intl/intl.dart';
+import 'dart:io';
 import '../api/call_api.dart';
 import '../styles/styles.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 
 class CreateLoisirPage extends StatefulWidget {
   const CreateLoisirPage({super.key});
@@ -85,9 +84,18 @@ class _CreateLoisirPageState extends State<CreateLoisirPage> {
         return;
       }
 
-      await _saveImage(context);
+      String imagePath;
 
-      final imagePath = 'images/${p.basename(_image!.path)}';
+      if (!kIsWeb) {
+        // Save the image locally on non-web platforms
+        final appDir = await getApplicationDocumentsDirectory();
+        final fileName = p.basename(_image!.path);
+        final savedImage =
+            await File(_image!.path).copy('${appDir.path}/$fileName');
+        imagePath = savedImage.path;
+      } else {
+        imagePath = _image!.path;
+      }
 
       final loisirData = {
         'nom': _nom,
@@ -100,7 +108,7 @@ class _CreateLoisirPageState extends State<CreateLoisirPage> {
 
       await ApiService.createLoisir(loisirData);
 
-      Navigator.pop(context);
+      Navigator.pop(buildContext);
     }
   }
 

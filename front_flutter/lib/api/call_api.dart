@@ -6,7 +6,7 @@ class ApiService {
   static const String baseUrl = Config.apiUrl;
 
   static Future<List<dynamic>> fetchLoisirs() async {
-    final response = await http.get(Uri.parse('$baseUrl/loisir/all'));
+    final response = await http.get(Uri.parse('${baseUrl}loisir/all'));
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
@@ -15,7 +15,7 @@ class ApiService {
   }
 
   static Future<List<dynamic>> fetchTypes() async {
-    final response = await http.get(Uri.parse('$baseUrl/type/all'));
+    final response = await http.get(Uri.parse('${baseUrl}type/all'));
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
@@ -24,7 +24,7 @@ class ApiService {
   }
 
   static Future<dynamic> fetchTopLoisir() async {
-    final response = await http.get(Uri.parse('$baseUrl/loisir/top'));
+    final response = await http.get(Uri.parse('${baseUrl}loisir/top'));
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
@@ -34,7 +34,7 @@ class ApiService {
 
   static Future<List<dynamic>> fetchLoisirsByType(int typeId) async {
     final response =
-        await http.get(Uri.parse('$baseUrl/loisir/getByType/$typeId'));
+        await http.get(Uri.parse('${baseUrl}loisir/getByType/$typeId'));
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
@@ -44,7 +44,7 @@ class ApiService {
 
   static Future<void> createLoisir(Map<String, dynamic> loisirData) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/loisir/create'),
+      Uri.parse('${baseUrl}loisir/create'),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -57,11 +57,21 @@ class ApiService {
   }
 
   static Future<Map<String, dynamic>> fetchTypeById(int typeId) async {
-    final response = await http.get(Uri.parse('$baseUrl/type/$typeId'));
+    final response = await http.get(Uri.parse('${baseUrl}type/$typeId'));
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
       throw Exception('Failed to load type by id');
+    }
+  }
+
+  static Future<void> deleteLoisir(int loisirId) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/loisir/$loisirId'),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete loisir');
     }
   }
 }

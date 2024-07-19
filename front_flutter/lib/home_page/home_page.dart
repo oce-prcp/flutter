@@ -5,6 +5,7 @@ import '../common_widgets/loisir_card.dart';
 import '../styles/styles.dart';
 import '../home_page/search_page.dart';
 import '../create_loisir/create_loisir_page.dart';
+import '../config.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -53,12 +54,15 @@ class _HomePageState extends State<HomePage> {
     } else if (index == 0) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => SearchPage()),  // Redirige vers SearchPage
+        MaterialPageRoute(
+            builder: (context) => SearchPage()), // Redirige vers SearchPage
       );
     } else {
-      setState(() {
-        _selectedIndex = index;
-      });
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => HomePage()), // Redirige vers SearchPage
+      );
     }
   }
 
@@ -99,7 +103,7 @@ class _HomePageState extends State<HomePage> {
             height: 300,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(snapshot.data['imagePath']),
+                image: NetworkImage(Config.apiUrl + snapshot.data['imagePath']),
                 fit: BoxFit.cover,
               ),
             ),
@@ -184,54 +188,56 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-Widget _buildMostPopular() {
-  return Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Most Popular ($_selectedTypeName)',
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontFamily: 'FiraSans')),
-            const Text('See all', style: TextStyle(color: secondaryColor)),
-          ],
-        ),
-        const SizedBox(height: 8),
-        FutureBuilder<List<dynamic>>(
-          future: _loisirs,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else {
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: snapshot.data!.map((loisir) {
-                    return LoisirCard(
-                      imagePath: loisir['imagePath'],
-                      title: loisir['nom'],
-                      notation: (loisir['notation'] as num).toDouble(),
-                      description: loisir['description'],
-                      dateSortie: loisir['dateSortie'],
-                      typeId: loisir['typeId'],
-                    );
-                  }).toList(),
-                ),
-              );
-            }
-          },
-        ),
-      ],
-    ),
-  );
-}
+  Widget _buildMostPopular() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Most Popular ($_selectedTypeName)',
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontFamily: 'FiraSans')),
+              const Text('See all', style: TextStyle(color: secondaryColor)),
+            ],
+          ),
+          const SizedBox(height: 8),
+          FutureBuilder<List<dynamic>>(
+            future: _loisirs,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else {
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: snapshot.data!.map((loisir) {
+                      return LoisirCard(
+                        imagePath: loisir['imagePath'],
+                        title: loisir['nom'],
+                        notation: (loisir['notation'] as num).toDouble(),
+                        description: loisir['description'],
+                        dateSortie: loisir['dateSortie'],
+                        typeId: loisir['typeId'],
+                        loisirId: loisir['id'], 
+                      );
+                    }).toList(),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
 
   Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(

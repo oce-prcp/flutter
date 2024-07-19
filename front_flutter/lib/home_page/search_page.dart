@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../api/call_api.dart';
 import '../common_widgets/loisir_card.dart';
+import '../create_loisir/create_loisir_page.dart';
 import '../styles/styles.dart';
+import 'home_page.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -37,7 +39,9 @@ class _SearchPageState extends State<SearchPage> {
           _filteredLoisirs = loisirs
               .where((loisir) =>
                   loisir['nom'].toLowerCase().contains(query.toLowerCase()) ||
-                  loisir['description'].toLowerCase().contains(query.toLowerCase()))
+                  loisir['description']
+                      .toLowerCase()
+                      .contains(query.toLowerCase()))
               .toList();
         }
       });
@@ -110,8 +114,24 @@ class _SearchPageState extends State<SearchPage> {
         unselectedItemColor: Colors.white,
         currentIndex: 0,
         onTap: (int index) {
-          if (index == 0) {
-            Navigator.pop(context); // Retour à la page d'accueil
+          if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const CreateLoisirPage()),
+            );
+          } else if (index == 0) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      SearchPage()), // Redirige vers SearchPage
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HomePage()), // Redirige vers SearchPage
+            );
           }
         },
         items: const <BottomNavigationBarItem>[
@@ -121,7 +141,7 @@ class _SearchPageState extends State<SearchPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.playlist_add),
-            label: 'Watchlist',
+            label: 'Add',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -184,6 +204,10 @@ class _SearchPageState extends State<SearchPage> {
                   imagePath: loisir['imagePath'],
                   title: loisir['nom'],
                   notation: (loisir['notation'] as num).toDouble(),
+                  description: loisir['description'], 
+                  dateSortie: loisir['dateSortie'],
+                  typeId: loisir['typeId'],
+                  loisirId: loisir['id'], 
                 ),
               );
             },

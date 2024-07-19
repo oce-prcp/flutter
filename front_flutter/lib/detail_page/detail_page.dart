@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; 
 import '../styles/styles.dart';
 import '../common_widgets/custom_button.dart';
+import '../api/call_api.dart'; 
+import '../home_page/search_page.dart';
+import '../create_loisir/create_loisir_page.dart';
 
 class DetailPage extends StatefulWidget {
   final String imagePath;
@@ -25,15 +29,72 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
+  String typeName = '';
+  int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    getTypeName();
+  }
+
+  Future<void> getTypeName() async {
+    try {
+      dynamic responseData = await ApiService.fetchTypeById(widget.typeId ?? -1);
+      if (responseData is String) {
+        setState(() {
+          typeName = responseData;
+        });
+      } else if (responseData is Map<String, dynamic>) {
+        String name = responseData['nom'];
+        setState(() {
+          typeName = name;
+        });
+      } else {
+        setState(() {
+          typeName = '';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        typeName = '';
+      });
+    }
+  }
+
+  void _onItemTapped(int index) {
+    if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => CreateLoisirPage()),
+      );
+    } else if (index == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SearchPage()), 
+      );
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(widget.title,
-            style: const TextStyle(color: secondaryColor, fontFamily: 'FiraSans')),
+        style: const TextStyle(color: secondaryColor, fontFamily: 'FiraSans')),
         backgroundColor: backgroundColor,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -52,7 +113,7 @@ class _DetailPageState extends State<DetailPage> {
           ],
         ),
       ),
-      //bottomNavigationBar: _buildBottomNavigationBar(),
+      bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
 
@@ -70,6 +131,10 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildTitleAndDate() {
+    String formattedDate = widget.dateSortie != null
+        ? DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.dateSortie!))
+        : '';
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -85,7 +150,7 @@ class _DetailPageState extends State<DetailPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            "${widget.dateSortie ?? 'Date de sortie inconnue'} - type ${widget.typeId ?? 'Inconnu'} - 2h32",
+            "$formattedDate ${typeName.isNotEmpty ? "- $typeName" : ''}",
             style: const TextStyle(
               color: Colors.white,
               fontSize: 16,
@@ -111,7 +176,7 @@ class _DetailPageState extends State<DetailPage> {
                 onPressed: () {
                   // TO DO
                 },
-                backgroundColor: Colors.blue,
+                backgroundColor: primaryColor,
               ),
             ),
           ),
@@ -124,7 +189,7 @@ class _DetailPageState extends State<DetailPage> {
                 onPressed: () {
                   // TO DO
                 },
-                backgroundColor: Colors.pink,
+                backgroundColor: secondaryColor,
               ),
             ),
           ),
@@ -163,7 +228,7 @@ class _DetailPageState extends State<DetailPage> {
 
   Widget _buildNotation() {
     return Padding(
-      padding: const EdgeInsets.all(2.0),
+      padding: const EdgeInsets.only(left: 2.0, top: 2.0, right: 16.0, bottom: 2.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -183,6 +248,30 @@ class _DetailPageState extends State<DetailPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildBottomNavigationBar() {
+    return BottomNavigationBar(
+      backgroundColor: backgroundColor,
+      selectedItemColor: primaryColor,
+      unselectedItemColor: Colors.white,
+      currentIndex: _selectedIndex,
+      onTap: _onItemTapped,
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.search),
+          label: 'Search',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.playlist_add),
+          label: 'Add',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+      ],
     );
   }
 }

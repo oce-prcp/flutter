@@ -55,4 +55,13 @@ class ApiService {
       throw Exception('Failed to create loisir');
     }
   }
+
+  static Future<Map<String, dynamic>> fetchTypeById(int typeId) async {
+    final response = await http.get(Uri.parse('$baseUrl/type/$typeId'));
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load type by id');
+    }
+  }
 }

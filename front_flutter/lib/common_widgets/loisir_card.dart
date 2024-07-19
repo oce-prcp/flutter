@@ -9,6 +9,7 @@ class LoisirCard extends StatelessWidget {
   final String? description;
   final String? dateSortie;
   final int? typeId;
+  final int loisirId;  
 
   LoisirCard({
     required this.imagePath,
@@ -17,6 +18,7 @@ class LoisirCard extends StatelessWidget {
     this.description,
     this.dateSortie,
     this.typeId,
+    required this.loisirId,  
   });
 
   @override
@@ -43,6 +45,7 @@ class LoisirCard extends StatelessWidget {
                         description: description,
                         dateSortie: dateSortie,
                         typeId: typeId,
+                        loisirId: loisirId,  
                       ),
                     ),
                   );

@@ -14,6 +14,7 @@ class DetailPage extends StatefulWidget {
   final String? description;
   final String? dateSortie;
   final int? typeId;
+  final int loisirId; 
 
   const DetailPage({
     Key? key,
@@ -23,6 +24,7 @@ class DetailPage extends StatefulWidget {
     this.description,
     this.dateSortie,
     this.typeId,
+    required this.loisirId,  
   }) : super(key: key);
 
   @override
@@ -79,6 +81,40 @@ class _DetailPageState extends State<DetailPage> {
       setState(() {
         _selectedIndex = index;
       });
+    }
+  }
+
+  Future<void> _deleteLoisir() async {
+    bool? confirm = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Confirmation de suppression'),
+        content: Text('Êtes-vous sûr de vouloir supprimer ce loisir ?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text('Annuler'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text('Supprimer'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      try {
+        await ApiService.deleteLoisir(widget.loisirId);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Loisir supprimé avec succès')),
+        );
+        Navigator.pop(context); // Retourne à la page précédente après la suppression
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur lors de la suppression : $e')),
+        );
+      }
     }
   }
 
@@ -176,9 +212,7 @@ class _DetailPageState extends State<DetailPage> {
               child: CustomButton(
                 icon: Icons.delete,
                 label: "Delete",
-                onPressed: () {
-                  // TO DO
-                },
+                onPressed: _deleteLoisir, // Appel de la méthode pour supprimer
                 backgroundColor: primaryColor,
               ),
             ),

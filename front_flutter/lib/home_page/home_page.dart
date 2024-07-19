@@ -225,6 +225,7 @@ class _HomePageState extends State<HomePage> {
                         description: loisir['description'],
                         dateSortie: loisir['dateSortie'],
                         typeId: loisir['typeId'],
+                        loisirId: loisir['id'], 
                       );
                     }).toList(),
                   ),
@@ -236,6 +237,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
 
   Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(

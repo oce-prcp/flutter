@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; 
+import 'package:intl/intl.dart';
 import '../styles/styles.dart';
 import '../common_widgets/custom_button.dart';
-import '../api/call_api.dart'; 
+import '../api/call_api.dart';
+import '../config.dart'; // Assurez-vous d'avoir ce fichier de configuration
 import '../home_page/search_page.dart';
 import '../create_loisir/create_loisir_page.dart';
 
@@ -40,7 +41,8 @@ class _DetailPageState extends State<DetailPage> {
 
   Future<void> getTypeName() async {
     try {
-      dynamic responseData = await ApiService.fetchTypeById(widget.typeId ?? -1);
+      dynamic responseData =
+          await ApiService.fetchTypeById(widget.typeId ?? -1);
       if (responseData is String) {
         setState(() {
           typeName = responseData;
@@ -71,7 +73,7 @@ class _DetailPageState extends State<DetailPage> {
     } else if (index == 0) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => SearchPage()), 
+        MaterialPageRoute(builder: (context) => SearchPage()),
       );
     } else {
       setState(() {
@@ -86,7 +88,8 @@ class _DetailPageState extends State<DetailPage> {
       backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(widget.title,
-        style: const TextStyle(color: secondaryColor, fontFamily: 'FiraSans')),
+            style:
+                const TextStyle(color: secondaryColor, fontFamily: 'FiraSans')),
         backgroundColor: backgroundColor,
         elevation: 0,
         leading: IconButton(
@@ -123,7 +126,7 @@ class _DetailPageState extends State<DetailPage> {
       height: 300,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage(widget.imagePath),
+          image: NetworkImage('${Config.apiUrl}${widget.imagePath}'),
           fit: BoxFit.cover,
         ),
       ),
@@ -228,7 +231,8 @@ class _DetailPageState extends State<DetailPage> {
 
   Widget _buildNotation() {
     return Padding(
-      padding: const EdgeInsets.only(left: 2.0, top: 2.0, right: 16.0, bottom: 2.0),
+      padding:
+          const EdgeInsets.only(left: 2.0, top: 2.0, right: 16.0, bottom: 2.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [

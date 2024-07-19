@@ -1,12 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:path/path.dart' as p;
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+import 'package:intl/intl.dart';
 import '../api/call_api.dart';
 import '../styles/styles.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 
 class CreateLoisirPage extends StatefulWidget {
   const CreateLoisirPage({super.key});
@@ -33,7 +35,7 @@ class _CreateLoisirPageState extends State<CreateLoisirPage> {
   }
 
   Future<void> _fetchTypes() async {
-    _types = await ApiService.fetchTypes();
+  _types = await ApiService.fetchTypes();
     setState(() {});
   }
 
@@ -46,29 +48,46 @@ class _CreateLoisirPageState extends State<CreateLoisirPage> {
     }
   }
 
-  Future<void> _saveLoisir(BuildContext buildContext) async {
+  Future<void> _saveImage(BuildContext context) async {
+    String? message;
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    try {
+      // Obtenir le répertoire temporaire
+      final dir = await getApplicationDocumentsDirectory();
+
+      // Créer un nom d'image
+      var filename =
+          p.join(dir.path, '${DateTime.now().millisecondsSinceEpoch}.png');
+
+      // Sauvegarder dans le système de fichiers
+      final file = File(filename);
+      await file.writeAsBytes(await _image!.readAsBytes());
+
+      message = 'Image saved to disk: $filename';
+    } catch (e) {
+      message = 'An error occurred while saving the image: $e';
+    }
+
+    if (message != null) {
+      scaffoldMessenger.showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
+
+  Future<void> _saveLoisir(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
       if (_image == null) {
-        ScaffoldMessenger.of(buildContext).showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please select an image')),
         );
         return;
       }
 
-      String imagePath;
+      await _saveImage(context);
 
-      if (!kIsWeb) {
-        // Save the image locally on non-web platforms
-        final appDir = await getApplicationDocumentsDirectory();
-        final fileName = p.basename(_image!.path);
-        final savedImage =
-            await File(_image!.path).copy('${appDir.path}/$fileName');
-        imagePath = savedImage.path;
-      } else {
-        imagePath = _image!.path;
-      }
+      final imagePath = 'images/${p.basename(_image!.path)}';
 
       final loisirData = {
         'nom': _nom,
@@ -81,7 +100,7 @@ class _CreateLoisirPageState extends State<CreateLoisirPage> {
 
       await ApiService.createLoisir(loisirData);
 
-      Navigator.pop(buildContext);
+      Navigator.pop(context);
     }
   }
 

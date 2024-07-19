@@ -59,7 +59,7 @@ class _CreateLoisirPageState extends State<CreateLoisirPage> {
         return;
       }
 
-      String url = '${Config.apiUrl}/loisir/create';
+      String url = '${Config.apiUrl}loisir/create';
 
       var request = http.MultipartRequest('POST', Uri.parse(url))
         ..fields['nom'] = _nom!

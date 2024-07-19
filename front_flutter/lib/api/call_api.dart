@@ -67,7 +67,7 @@ class ApiService {
 
   static Future<void> deleteLoisir(int loisirId) async {
     final response = await http.delete(
-      Uri.parse('$baseUrl/loisir/$loisirId'),
+      Uri.parse('${baseUrl}loisir/$loisirId'),
     );
 
     if (response.statusCode != 200) {

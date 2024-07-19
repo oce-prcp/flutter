@@ -1,12 +1,14 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import '../api/call_api.dart';
 import '../styles/styles.dart';
+import '../config.dart';
 
 class CreateLoisirPage extends StatefulWidget {
   const CreateLoisirPage({super.key});
@@ -57,31 +59,33 @@ class _CreateLoisirPageState extends State<CreateLoisirPage> {
         return;
       }
 
-      String imagePath;
+      String url = '${Config.apiUrl}/loisir/create';
 
-      if (!kIsWeb) {
-        // Save the image locally on non-web platforms
-        final appDir = await getApplicationDocumentsDirectory();
-        final fileName = p.basename(_image!.path);
-        final savedImage =
-            await File(_image!.path).copy('${appDir.path}/$fileName');
-        imagePath = savedImage.path;
+      var request = http.MultipartRequest('POST', Uri.parse(url))
+        ..fields['nom'] = _nom!
+        ..fields['description'] = _description!
+        ..fields['dateSortie'] = _dateSortie!.toIso8601String()
+        ..fields['notation'] = _notation.toString()
+        ..fields['typeId'] = _typeId.toString()
+        ..files.add(await http.MultipartFile.fromPath(
+          'image',
+          _image!.path,
+          contentType:
+              MediaType('image', p.extension(_image!.path).replaceAll('.', '')),
+        ));
+
+      var response = await request.send();
+
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(buildContext).showSnackBar(
+          const SnackBar(content: Text('Loisir created successfully')),
+        );
+        Navigator.pop(buildContext);
       } else {
-        imagePath = _image!.path;
+        ScaffoldMessenger.of(buildContext).showSnackBar(
+          const SnackBar(content: Text('Failed to create loisir')),
+        );
       }
-
-      final loisirData = {
-        'nom': _nom,
-        'description': _description,
-        'dateSortie': _dateSortie!.toIso8601String(),
-        'notation': _notation,
-        'typeId': _typeId,
-        'imagePath': imagePath,
-      };
-
-      await ApiService.createLoisir(loisirData);
-
-      Navigator.pop(buildContext);
     }
   }
 

@@ -1,13 +1,34 @@
-const express = require('express')
-const route = express.Router()
-const loisirController = require('../controllers/loisirController')
+const express = require('express');
+const router = express.Router();
+const multer = require('multer');
+const loisirController = require('../controllers/loisirController');
 
-route.post('/create', loisirController.CreateLoisir)
-route.put('/update/:id', loisirController.UpdateLoisir)
-route.get('/all', loisirController.AllLoisirs)
-route.get('/getByType/:id',loisirController.LoisirsByTypeId)
-route.get('/top', loisirController.TopLoisir)
-route.get('/:id', loisirController.LoisirId)
-route.delete('/:id', loisirController.DeleteLoisir)
+const MIME_TYPES = {
+   'image/jpg': 'jpg',
+   'image/jpeg': 'jpg',
+   'image/png': 'png',
+};
 
-module.exports = route
+const storage = multer.diskStorage({
+   destination: (req, file, cb) => {
+      cb(null, 'images/');
+   },
+   filename: (req, file, cb) => {
+      const name = file.originalname.split(' ').join('_');
+      const extension = MIME_TYPES[file.mimetype];
+      cb(null, name + Date.now() + '.' + extension);
+   },
+});
+
+const upload = multer({ storage: storage });
+
+// Routes existantes
+router.post('/create', upload.single('image'), loisirController.createLoisir);
+router.put('/update/:id', upload.single('image'), loisirController.updateLoisir);
+router.get('/all', loisirController.AllLoisirs);
+router.get('/getByType/:id', loisirController.LoisirsByTypeId);
+router.get('/top', loisirController.TopLoisir);
+router.get('/:id', loisirController.LoisirId);
+router.delete('/:id', loisirController.DeleteLoisir);
+
+module.exports = router;
